@@ -3,8 +3,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { UsersModule } from './users/users.module';
-import { ClockModule } from './clock/clock.module';
+import { UsersModule } from './user/user.module';
+import { CustomersModule } from './customer/customer.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -21,11 +22,12 @@ import { ClockModule } from './clock/clock.module';
         password: config.get<string>('DB_PASSWORD', 'postgres'),
         database: config.get<string>('DB_NAME', 'nest_test'),
         autoLoadEntities: true,
-        synchronize: true, // disable in production
+        synchronize: true,
       }),
     }),
     UsersModule,
-    ClockModule,
+    CustomersModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
