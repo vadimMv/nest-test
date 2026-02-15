@@ -2,6 +2,7 @@ import {
   Injectable,
   UnauthorizedException,
   ConflictException,
+  NotFoundException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -11,6 +12,7 @@ import { User } from '../user/user.entity';
 import { RegisterDto, LoginDto } from './dto/user.dto';
 import { randomUUID } from 'crypto';
 import { RevokedTokensService } from 'src/tokens/revoked-tokens.service';
+import { UserRoles } from 'src/shared/roles.enum';
 
 @Injectable()
 export class AuthService {
@@ -47,6 +49,7 @@ export class AuthService {
         name: user.name,
         email: user.email,
         phoneNumber: user.phoneNumber,
+        role: user.role,
       },
       token,
     };
@@ -75,6 +78,7 @@ export class AuthService {
         name: user.name,
         email: user.email,
         phoneNumber: user.phoneNumber,
+        role: user.role,
       },
       token,
     };
@@ -85,7 +89,7 @@ export class AuthService {
   }
 
   private generateToken(user: User): string {
-    const payload = { sub: user.userId, email: user.email };
+    const payload = { sub: user.userId, email: user.email, role: user.role };
     return this.jwtService.sign(payload, {
       jwtid: randomUUID(),
     });
@@ -97,5 +101,15 @@ export class AuthService {
     await this.revokeToken.revokeToken(user.jti, expiresAt);
 
     return { message: 'Logged out successfully' };
+  }
+
+  async updateRole(userId: string, role: UserRoles) {
+    const result = await this.userRepository.update({ userId }, { role });
+
+    if (result.affected === 0) {
+      throw new NotFoundException('User not found');
+    }
+
+    return this.userRepository.findOne({ where: { userId } });
   }
 }

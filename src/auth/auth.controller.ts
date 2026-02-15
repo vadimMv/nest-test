@@ -1,9 +1,18 @@
-import { Controller, Post, Body, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  UseGuards,
+  Patch,
+  Param,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { RegisterDto, LoginDto } from './dto/user.dto';
+import { RegisterDto, LoginDto, UpdateRoleDto } from './dto/user.dto';
 import { CurrentUser } from './current-user.decorator';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-
+import { Roles } from './roles.decarator';
+import { UserRoles } from 'src/shared/roles.enum';
+import { RolesGuard } from './roles.guard';
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
@@ -22,5 +31,15 @@ export class AuthController {
   @Post('logout')
   async logout(@CurrentUser() user) {
     return this.authService.logout(user);
+  }
+
+  @Patch(':id/role')
+  @Roles(UserRoles.ADMIN)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  async updateRole(
+    @Param('id') id: string,
+    @Body() updateRoleDto: UpdateRoleDto,
+  ) {
+    return this.authService.updateRole(id, updateRoleDto.role);
   }
 }

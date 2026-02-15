@@ -6,6 +6,7 @@ import {
   OneToMany,
 } from 'typeorm';
 import { Customer } from '../customer/customer.entity';
+import { UserRoles } from 'src/shared/roles.enum';
 
 @Entity('users')
 export class User {
@@ -29,4 +30,11 @@ export class User {
 
   @OneToMany(() => Customer, (customer) => customer.user)
   customers: Customer[];
+
+  @Column({
+    type: 'enum',
+    enum: UserRoles,
+    default: UserRoles.VIEWER,
+  })
+  role: UserRoles;
 }

@@ -4,7 +4,9 @@ import {
   IsOptional,
   MinLength,
   IsNotEmpty,
+  IsEnum,
 } from 'class-validator';
+import { UserRoles } from 'src/shared/roles.enum';
 
 export class LoginDto {
   @IsEmail()
@@ -32,4 +34,9 @@ export class RegisterDto {
   @IsOptional()
   @IsString()
   phone?: string;
+}
+
+export class UpdateRoleDto {
+  @IsEnum(UserRoles)
+  role: UserRoles;
 }

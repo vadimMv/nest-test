@@ -1,8 +1,12 @@
-import { Injectable, ConflictException } from '@nestjs/common';
+import {
+  Injectable,
+  ConflictException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Customer } from './customer.entity';
-import { CreateCustomerDto } from './create-customer.dto';
+import { CreateCustomerDto, UpdateCustomerDto } from './create-customer.dto';
 
 @Injectable()
 export class CustomersService {
@@ -34,5 +38,31 @@ export class CustomersService {
         createdAt: 'DESC',
       },
     });
+  }
+
+  async update(id: string, userId: string, dto: UpdateCustomerDto) {
+    const customer = await this.customerRepo.findOne({
+      where: { id, userId },
+    });
+
+    if (!customer) {
+      throw new NotFoundException('Customer not found');
+    }
+
+    Object.assign(customer, dto);
+    return this.customerRepo.save(customer);
+  }
+
+  async delete(id: string, userId: string) {
+    const customer = await this.customerRepo.findOne({
+      where: { id, userId },
+    });
+
+    if (!customer) {
+      throw new NotFoundException('Customer not found');
+    }
+
+    await this.customerRepo.remove(customer);
+    return { message: 'Customer deleted' };
   }
 }
