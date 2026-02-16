@@ -6,12 +6,9 @@ import {
   OneToMany,
   Index,
 } from 'typeorm';
-<<<<<<< Updated upstream
-import { Customer } from '../customer/customer.entity';
-=======
+
 import { Account } from '../account/entities/account.entity';
-import { UserRoles } from 'src/shared/roles.enum';
->>>>>>> Stashed changes
+import { UserRoles } from '../shared/roles.enum.js';
 
 @Entity('users')
 @Index(['email'])
@@ -34,10 +31,6 @@ export class User {
   @CreateDateColumn()
   createdAt: Date;
 
-<<<<<<< Updated upstream
-  @OneToMany(() => Customer, (customer) => customer.user)
-  customers: Customer[];
-=======
   @OneToMany(() => Account, (account) => account.user)
   accounts: Account[];
 
@@ -47,5 +40,4 @@ export class User {
     default: UserRoles.VIEWER,
   })
   role: UserRoles;
->>>>>>> Stashed changes
 }
