@@ -12,6 +12,14 @@
     {
       "key": "token",
       "value": ""
+    },
+    {
+      "key": "accountId",
+      "value": ""
+    },
+    {
+      "key": "userId",
+      "value": ""
     }
   ],
   "item": [
@@ -90,14 +98,39 @@
               "path": ["auth", "logout"]
             }
           }
+        },
+        {
+          "name": "Update User Role",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/{{userId}}/role",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "{{userId}}", "role"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"role\": \"editor\"\n}"
+            }
+          }
         }
       ]
     },
     {
-      "name": "Customers",
+      "name": "Accounts",
       "item": [
         {
-          "name": "Create Customer",
+          "name": "Create Account",
           "request": {
             "method": "POST",
             "header": [
@@ -111,18 +144,18 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/customers",
+              "raw": "{{baseUrl}}/accounts",
               "host": ["{{baseUrl}}"],
-              "path": ["customers"]
+              "path": ["accounts"]
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"phoneNumber\": \"+9876543210\"\n}"
+              "raw": "{\n  \"userId\": \"{{userId}}\",\n  \"accountNumber\": \"123456\",\n  \"accountType\": \"checking\",\n  \"currency\": \"USD\"\n}"
             }
           }
         },
         {
-          "name": "Get All Customers",
+          "name": "Get All Accounts",
           "request": {
             "method": "GET",
             "header": [
@@ -132,9 +165,233 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/customers",
+              "raw": "{{baseUrl}}/accounts",
               "host": ["{{baseUrl}}"],
-              "path": ["customers"]
+              "path": ["accounts"]
+            }
+          }
+        },
+        {
+          "name": "Get My Accounts",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/accounts/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["accounts", "me"]
+            }
+          }
+        },
+        {
+          "name": "Get Account by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/accounts/{{accountId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["accounts", "{{accountId}}"]
+            }
+          }
+        },
+        {
+          "name": "Get Account Balance",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/accounts/{{accountId}}/balance",
+              "host": ["{{baseUrl}}"],
+              "path": ["accounts", "{{accountId}}", "balance"]
+            }
+          }
+        },
+        {
+          "name": "Update Account",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/accounts/{{accountId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["accounts", "{{accountId}}"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"accountType\": \"savings\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete Account",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/accounts/{{accountId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["accounts", "{{accountId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Transactions",
+      "item": [
+        {
+          "name": "Deposit",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/transaction/deposit",
+              "host": ["{{baseUrl}}"],
+              "path": ["transaction", "deposit"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"accountId\": \"{{accountId}}\",\n  \"amount\": 100.00,\n  \"description\": \"Initial deposit\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Withdraw",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/transaction/withdraw",
+              "host": ["{{baseUrl}}"],
+              "path": ["transaction", "withdraw"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"accountId\": \"{{accountId}}\",\n  \"amount\": 50.00,\n  \"description\": \"ATM withdrawal\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Transfer",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/transaction/transfer",
+              "host": ["{{baseUrl}}"],
+              "path": ["transaction", "transfer"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"accountId\": \"{{accountId}}\",\n  \"targetAccountId\": \"target-account-uuid-here\",\n  \"amount\": 25.00,\n  \"description\": \"Transfer to savings\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Get All Transactions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/transaction",
+              "host": ["{{baseUrl}}"],
+              "path": ["transaction"]
+            }
+          }
+        },
+        {
+          "name": "Get Account Transactions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/transaction/accounts/{{accountId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["transaction", "accounts", "{{accountId}}"]
+            }
+          }
+        },
+        {
+          "name": "Get Transaction by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/transaction/transaction-uuid-here",
+              "host": ["{{baseUrl}}"],
+              "path": ["transaction", "transaction-uuid-here"]
             }
           }
         }
