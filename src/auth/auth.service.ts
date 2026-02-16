@@ -85,7 +85,7 @@ export class AuthService {
   }
 
   private generateToken(user: User): string {
-    const payload = { sub: user.userId, email: user.email };
+    const payload = { sub: user.userId, email: user.email, role: user.role };
     return this.jwtService.sign(payload, {
       jwtid: randomUUID(),
     });
