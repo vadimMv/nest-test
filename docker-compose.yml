@@ -14,6 +14,22 @@ services:
     depends_on:
       - postgres
 
+  test:
+    build: .
+    command: npm run test:e2e -- --forceExit
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: nest_test
+      JWT_SECRET: your-secret-key
+    depends_on:
+      postgres:
+        condition: service_healthy
+    profiles:
+      - test
+
   postgres:
     image: postgres:16-alpine
     ports:
@@ -24,6 +40,11 @@ services:
       POSTGRES_DB: nest_test
     volumes:
       - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   pgadmin:
     image: dpage/pgadmin4
